@@ -1,0 +1,9 @@
+
+
+
+#utils/:
+#Aquí se colocan utilidades como loggers, validadores, helpers, etc.
+node_modules
+
+.env
+package-lock.json
