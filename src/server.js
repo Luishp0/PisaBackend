@@ -12,7 +12,7 @@ import centroRoutes from './routes/centroRouter.js'
 import procesoRoutes from './routes/procesoRouter.js'
 import etapaRoutes from './routes/etapaRouter.js'
 import departamentoRouter from "./routes/departamentoRouter.js";
-
+import grupoRouter from "./routes/grupoRouter.js";
 
 const app = express();
 
@@ -29,8 +29,8 @@ app.use('/produccion', produccionRoutes)
 app.use('/centro', centroRoutes)
 app.use('/proceso', procesoRoutes)
 app.use('/etapa', etapaRoutes)
-app.use("/departamento", departamentoRouter);
-
+app.use('/departamento', departamentoRouter);
+app.use('/grupo', grupoRouter);
 
 
 

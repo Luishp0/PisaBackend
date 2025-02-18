@@ -6,6 +6,6 @@ const GrupoSchema = new mongoose.Schema({
 
 })
 
-const Paro = mongoose.model('grupos', GrupoSchema)
+const Grupo = mongoose.model('grupos', GrupoSchema)
 
-export default Paro
+export default Grupo
