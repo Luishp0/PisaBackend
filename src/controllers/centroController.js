@@ -1,4 +1,4 @@
-import Centro from '../models/Centro.js';
+import Centro from '../models/centroModel.js';
 
 // Crear un nuevo centro
 export const crearCentro = async (req, res) => {

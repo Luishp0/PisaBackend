@@ -1,4 +1,4 @@
-import Produccion from '../models/Produccion.js';
+import Produccion from '../models/produccionModel.js';
 
 // Crear una nueva producción
 export const crearProduccion = async (req, res) => {
