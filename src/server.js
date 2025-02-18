@@ -14,6 +14,7 @@ import etapaRoutes from './routes/etapaRouter.js'
 import departamentoRouter from "./routes/departamentoRouter.js";
 import grupoRouter from "./routes/grupoRouter.js";
 import turnoRouter from "./routes/turnoRouter.js";
+import lineaRouter from "./routes/lineaRouter.js";
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use(cors());
 app.use(express.json());
 
 // Rutas
-app.use('/usuarios', userRoutes);
+app.use('/usuario', userRoutes);
 app.use('/roles', roleRoutes);
 app.use('/auth', authRoutes)
 
@@ -32,7 +33,8 @@ app.use('/proceso', procesoRoutes)
 app.use('/etapa', etapaRoutes)
 app.use('/departamento', departamentoRouter);
 app.use('/grupo', grupoRouter);
-app.use('/turnos', turnoRouter);
+app.use('/turno', turnoRouter);
+app.use("/linea", lineaRouter);
 
 
 // Iniciar servidor

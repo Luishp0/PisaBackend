@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
-const CentroSchema = new mongoose.Schema({
+const LineaSchema = new mongoose.Schema({
     produccion: { type: mongoose.Schema.Types.ObjectId, ref: 'Produccion', required: true },
-    nombreCentro: { type: String, required: true }
+    nombreLinea: { type: String, required: true },
+    velocidadLinea: {type: Number}
 });
 
-const Centro = mongoose.model('Centro', CentroSchema);
+const Linea = mongoose.model('Linea', LineaSchema);
 
-export default Centro;
+export default Linea;
