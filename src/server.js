@@ -17,6 +17,7 @@ import turnoRouter from "./routes/turnoRouter.js";
 import lineaRouter from "./routes/lineaRouter.js";
 import materialRouter from "./routes/materialRouter.js";
 import rechazoRouter from "./routes/rechazoRouter.js";
+import paroRouter from "./routes/paroRouter.js";
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/turno', turnoRouter);
 app.use("/linea", lineaRouter);
 app.use("/materiales", materialRouter);
 app.use("/rechazos", rechazoRouter);
+app.use("/paros", paroRouter);
 
 // Iniciar servidor
 const startServer = async () => {
