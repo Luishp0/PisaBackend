@@ -13,6 +13,7 @@ import procesoRoutes from './routes/procesoRouter.js'
 import etapaRoutes from './routes/etapaRouter.js'
 import departamentoRouter from "./routes/departamentoRouter.js";
 import grupoRouter from "./routes/grupoRouter.js";
+import turnoRouter from "./routes/turnoRouter.js";
 
 const app = express();
 
@@ -31,7 +32,7 @@ app.use('/proceso', procesoRoutes)
 app.use('/etapa', etapaRoutes)
 app.use('/departamento', departamentoRouter);
 app.use('/grupo', grupoRouter);
-
+app.use('/turnos', turnoRouter);
 
 
 // Iniciar servidor
