@@ -10,6 +10,7 @@ import authRoutes from './routes/authRouter.js'
 import produccionRoutes from './routes/produccionRouter.js'
 import centroRoutes from './routes/centroRouter.js'
 import procesoRoutes from './routes/procesoRouter.js'
+import etapaRoutes from './routes/etapaRouter.js'
 
 const app = express();
 
@@ -23,7 +24,8 @@ app.use('/roles', roleRoutes);
 app.use('/auth', authRoutes)
 app.use('/produccion', produccionRoutes)
 app.use('/centro', centroRoutes)
-app.user('/proceso', procesoRoutes)
+app.use('/proceso', procesoRoutes)
+app.use('/etapa', etapaRoutes)
 
 
 
