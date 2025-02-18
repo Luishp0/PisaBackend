@@ -11,6 +11,8 @@ import produccionRoutes from './routes/produccionRouter.js'
 import centroRoutes from './routes/centroRouter.js'
 import procesoRoutes from './routes/procesoRouter.js'
 import etapaRoutes from './routes/etapaRouter.js'
+import departamentoRouter from "./routes/departamentoRouter.js";
+
 
 const app = express();
 
@@ -22,10 +24,12 @@ app.use(express.json());
 app.use('/usuarios', userRoutes);
 app.use('/roles', roleRoutes);
 app.use('/auth', authRoutes)
+
 app.use('/produccion', produccionRoutes)
 app.use('/centro', centroRoutes)
 app.use('/proceso', procesoRoutes)
 app.use('/etapa', etapaRoutes)
+app.use("/departamento", departamentoRouter);
 
 
 
