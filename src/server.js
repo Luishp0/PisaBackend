@@ -7,6 +7,8 @@ import { PORT } from './config/env.js';
 import userRoutes from './routes/userRouter.js';
 import roleRoutes from './routes/roleRouter.js';
 import authRoutes from './routes/authRouter.js'
+import produccionRoutes from './routes/produccionRouter.js'
+import centroRoutes from './routes/centroRouter.js'
 
 const app = express();
 
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use('/usuarios', userRoutes);
 app.use('/roles', roleRoutes);
 app.use('/auth', authRoutes)
+app.use('/produccion', produccionRoutes)
+app.use('/centro', centroRoutes)
 
 
 
