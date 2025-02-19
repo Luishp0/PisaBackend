@@ -8,10 +8,11 @@ const UsuarioSchema = new mongoose.Schema({
     bloqueado: { type: Boolean, default: false },
     intentoFallidos: { type: Number, default: 0 },
     fechaHora: { type: Date, default: Date.now },
-    idRol: { type: mongoose.Schema.Types.ObjectId, ref: 'roles', required: true }
+    idRol: { type: mongoose.Schema.Types.ObjectId, ref: 'roles', required: true },
+    ultimoInicioSesion: { type: Date }  // 🔹 Nuevo campo para almacenar el último login
 });
 
 
-const usuario = mongoose.model('usuario', UsuarioSchema)
+const usuario = mongoose.model('usuarios', UsuarioSchema)
 
 export default usuario

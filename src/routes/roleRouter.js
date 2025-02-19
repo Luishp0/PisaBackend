@@ -8,7 +8,6 @@ import { getAllRoles, getRoleByClase,
 const router = express.Router();
 
 router.get('/', getAllRoles);
-router.get('/:clase', getRoleByClase);
 
 // Ruta para crear un nuevo role
 router.post("/", createRole);
