@@ -117,3 +117,19 @@ export const getUserStatus = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener estado del usuario' });
   }
 };
+
+// Ahora puedes usar Usuario en tus funciones de controlador
+export const verificarDisponibilidadNombreUsuario = async (req, res) => {
+  try {
+      const { username } = req.query;
+      const usuarioExistente = await Usuario.findOne({ nombreUsuario: username });
+      
+      res.json({ 
+          disponible: !usuarioExistente,
+          mensaje: usuarioExistente ? 'El nombre de usuario ya existe' : 'Nombre de usuario disponible'
+      });
+  } catch (error) {
+      console.error('Error al verificar la disponibilidad del nombre de usuario:', error);
+      res.status(500).json({ mensaje: 'Error al verificar la disponibilidad del nombre de usuario' });
+  }
+};

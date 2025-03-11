@@ -1,9 +1,9 @@
 import express from 'express';
-import {  getUserByName, getUserStatus,  createUser, getUsers, getUserById, updateUser, deleteUser} from '../controllers/userController.js';
+import {  getUserByName, getUserStatus,  createUser, getUsers, getUserById, updateUser, deleteUser, verificarDisponibilidadNombreUsuario} from '../controllers/userController.js';
 
 const router = express.Router();
 
-
+router.get('/check-username', verificarDisponibilidadNombreUsuario) 
 router.get('/buscar/:nombre', getUserByName); // Buscar usuarios por nombre
 router.get('/estado/:id', getUserStatus); // Obtener estado del usuario
 router.post("/", createUser); // Crear usuario
