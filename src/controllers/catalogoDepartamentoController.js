@@ -29,13 +29,13 @@ export const getCatalogoDepartamentoById = async (req, res) => {
 // Crear un nuevo departamento
 export const createCatalogoDepartamento = async (req, res) => {
   try {
-    const { nombreDepartementoCatalogo } = req.body;
+    const { nombreDepartamentoCatalogo } = req.body;
     
-    if (!nombreDepartementoCatalogo) {
+    if (!nombreDepartamentoCatalogo) {
       return res.status(400).json({ message: 'El nombre del departamento es requerido' });
     }
     
-    const newCatalogoDepartamento = new CatalogoDepartamento({ nombreDepartementoCatalogo });
+    const newCatalogoDepartamento = new CatalogoDepartamento({ nombreDepartamentoCatalogo });
     await newCatalogoDepartamento.save();
     
     res.status(201).json({ message: 'Departamento creado exitosamente', departamento: newCatalogoDepartamento });
@@ -48,9 +48,9 @@ export const createCatalogoDepartamento = async (req, res) => {
 export const updateCatalogoDepartamento = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombreDepartementoCatalogo } = req.body;
+    const { nombreDepartamentoCatalogo } = req.body;
     
-    if (!nombreDepartementoCatalogo) {
+    if (!nombreDepartamentoCatalogo) {
       return res.status(400).json({ message: 'El nombre del departamento es requerido' });
     }
     
