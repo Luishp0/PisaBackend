@@ -18,6 +18,15 @@ import lineaRouter from "./routes/lineaRouter.js";
 import materialRouter from "./routes/materialRouter.js";
 import rechazoRouter from "./routes/rechazoRouter.js";
 import paroRouter from "./routes/paroRouter.js";
+//catalogo
+import catalogoTurnoRoutes from './routes/catalogoTurnoRoute.js';
+import catalogoProcesoRoutes from './routes/catalogoProcesoRoute.js';
+import catalogoLineaRoutes from './routes/catalogoLineaRoute.js';
+import catalogoGrupoRoutes from './routes/catalogoGrupoRoute.js';
+import catalogoEtapaRoutes from './routes/catalogoEtapaRoute.js';
+import catalogoDepartamentoRoutes from './routes/catalogoDepartamentoRoute.js';
+import catalogoCentroRoutes from './routes/catalogoCentroRoute.js';
+
 
 const app = express();
 
@@ -42,6 +51,15 @@ app.use("/linea", lineaRouter);
 app.use("/materiales", materialRouter);
 app.use("/rechazos", rechazoRouter);
 app.use("/paros", paroRouter);
+//catalogo
+app.use('/catalogoTurno', catalogoTurnoRoutes);
+app.use('/catalogoProceso', catalogoProcesoRoutes);
+app.use('/catalogoLinea', catalogoLineaRoutes);
+app.use('/catalogoGrupo', catalogoGrupoRoutes);
+app.use('/catalogoEtapa', catalogoEtapaRoutes);
+app.use('/catalogoDepartamento', catalogoDepartamentoRoutes);
+app.use('/catalogoCentro', catalogoCentroRoutes);
+
 
 // Iniciar servidor
 const startServer = async () => {
