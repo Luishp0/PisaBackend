@@ -4,10 +4,10 @@ import { crearCentro, obtenerCentros, obtenerCentroPorId, actualizarCentro, elim
 const router = express.Router();
 
 // Rutas para los centros
-router.post('/centro', crearCentro);
-router.get('/centro', obtenerCentros);
-router.get('/centro/:id', obtenerCentroPorId);
-router.put('/centro/:id', actualizarCentro);
-router.delete('/centro/:id', eliminarCentro);
+router.post('/', crearCentro);
+router.get('/', obtenerCentros);
+router.get('/:id', obtenerCentroPorId);
+router.put('/:id', actualizarCentro);
+router.delete('/:id', eliminarCentro);
 
 export default router;

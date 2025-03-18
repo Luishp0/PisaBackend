@@ -39,12 +39,12 @@ app.use(express.urlencoded({ extended: true }));
 // Rutas
 app.use('/usuario', userRoutes);
 app.use('/roles', roleRoutes);
-app.use('/auth', authRoutes)
+app.use('/auth', authRoutes);
 
-app.use('/produccion', produccionRoutes)
-app.use('/centro', centroRoutes)
-app.use('/proceso', procesoRoutes)
-app.use('/etapa', etapaRoutes)
+app.use('/produccion', produccionRoutes);
+app.use('/centro', centroRoutes);
+app.use('/proceso', procesoRoutes);
+app.use('/etapa', etapaRoutes);
 app.use('/departamento', departamentoRouter);
 app.use('/grupo', grupoRouter);
 app.use('/turno', turnoRouter);
