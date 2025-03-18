@@ -5,7 +5,6 @@ const ProduccionSchema = new mongoose.Schema({
     fechaHora: { type: Date, default: Date.now },
     piezasProduccidas: {type: Number},
     ciclo: { type: Number, required: true, min: 1 },
-    velocidadMin: { type: Number, required: true, min: 0 }
 });
 
 const Produccion = mongoose.model('Produccion', ProduccionSchema);
