@@ -32,7 +32,7 @@ export const getMaterialById = async (req, res) => {
 // Crear un nuevo material
 export const createMaterial = async (req, res) => {
   try {
-    const { nombreMaterialCatalogo, descripcionMaterial } = req.body;
+    const { nombreMaterialCatalogo, descripcionMaterial, velocidadNominal} = req.body;
     
     // Validar que se proporcionen los campos requeridos
     if (!nombreMaterialCatalogo || !descripcionMaterial) {
@@ -50,7 +50,8 @@ export const createMaterial = async (req, res) => {
     // Crear el nuevo material
     const nuevoMaterial = new CatalogoMaterial({
       nombreMaterialCatalogo,
-      descripcionMaterial
+      descripcionMaterial,
+      velocidadNominal
     });
     
     // Guardar en la base de datos

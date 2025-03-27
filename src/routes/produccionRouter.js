@@ -4,10 +4,10 @@ import { crearProduccion, obtenerProducciones, obtenerProduccionPorId, actualiza
 const router = express.Router();
 
 // Rutas para la producción
-router.post('/produccion', crearProduccion);
-router.get('/produccion', obtenerProducciones);
-router.get('/produccion/:id', obtenerProduccionPorId);
-router.put('/produccion/:id', actualizarProduccion);
-router.delete('/produccion/:id', eliminarProduccion);
+router.post('/', crearProduccion);
+router.get('/', obtenerProducciones);
+router.get('/:id', obtenerProduccionPorId);
+router.put('/:id', actualizarProduccion);
+router.delete('/:id', eliminarProduccion);
 
 export default router;

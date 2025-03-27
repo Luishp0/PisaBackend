@@ -42,6 +42,8 @@ app.use('/roles', roleRoutes);
 app.use('/auth', authRoutes);
 
 app.use('/produccion', produccionRoutes);
+
+app.use("/materiales", materialRouter);
 app.use('/centro', centroRoutes);
 app.use('/proceso', procesoRoutes);
 app.use('/etapa', etapaRoutes);
@@ -49,8 +51,8 @@ app.use('/departamento', departamentoRouter);
 app.use('/grupo', grupoRouter);
 app.use('/turno', turnoRouter);
 app.use("/linea", lineaRouter);
-app.use("/materiales", materialRouter);
-app.use("/rechazos", rechazoRouter);
+
+app.use("/rechazo", rechazoRouter);
 app.use("/paros", paroRouter);
 //catalogo
 app.use('/catalogoTurno', catalogoTurnoRoutes);

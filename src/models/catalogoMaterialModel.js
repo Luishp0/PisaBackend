@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 
 const CatalogoMaterialSchema = new mongoose.Schema({
     nombreMaterialCatalogo: {type: String, required: true},
-    descripcionMaterial: {type: String, required: true}
+    descripcionMaterial: {type: String, required: true},
+    velocidadNominal: {type: Number, required: true},
 })
 
 const CatalogoMaterial = mongoose.model('CatalogoMaterial', CatalogoMaterialSchema);
