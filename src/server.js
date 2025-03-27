@@ -27,7 +27,7 @@ import catalogoEtapaRoutes from './routes/catalogoEtapaRoute.js';
 import catalogoDepartamentoRoutes from './routes/catalogoDepartamentoRoute.js';
 import catalogoCentroRoutes from './routes/catalogoCentroRoute.js';
 import catalogoMaterialRoutes from './routes/catalogoMaterialRoute.js'
-
+import catalogoRechazoRoutes from './routes/catalogoRechazoRoute.js';
 
 const app = express();
 
@@ -63,7 +63,7 @@ app.use('/catalogoEtapa', catalogoEtapaRoutes);
 app.use('/catalogoDepartamento', catalogoDepartamentoRoutes);
 app.use('/catalogoCentro', catalogoCentroRoutes);
 app.use('/catalogoMaterial', catalogoMaterialRoutes);
-
+app.use('/catalogoRechazo', catalogoRechazoRoutes);
 
 // Iniciar servidor
 const startServer = async () => {
