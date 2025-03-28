@@ -28,6 +28,7 @@ import catalogoDepartamentoRoutes from './routes/catalogoDepartamentoRoute.js';
 import catalogoCentroRoutes from './routes/catalogoCentroRoute.js';
 import catalogoMaterialRoutes from './routes/catalogoMaterialRoute.js'
 import catalogoRechazoRoutes from './routes/catalogoRechazoRoute.js';
+import catalogoParoRoutes from './routes/catalogoParoRoutes.js';
 
 const app = express();
 
@@ -64,6 +65,8 @@ app.use('/catalogoDepartamento', catalogoDepartamentoRoutes);
 app.use('/catalogoCentro', catalogoCentroRoutes);
 app.use('/catalogoMaterial', catalogoMaterialRoutes);
 app.use('/catalogoRechazo', catalogoRechazoRoutes);
+app.use('/catalogoParo', catalogoParoRoutes);
+
 
 // Iniciar servidor
 const startServer = async () => {
