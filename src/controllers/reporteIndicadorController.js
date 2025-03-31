@@ -132,34 +132,50 @@ export const getReporteIndicadores = async (req, res) => {
       }
     );
     
-    // Etapa 5: Proyectar los datos en el formato deseado con todos los campos necesarios
-    pipeline.push({
-      $project: {
-        _id: 1,
-        id: '$_id',
-        // Campos de material
-        material: '$material.nombreMaterial',
-        descripcionMaterial: '$material.descripcionMaterial',
-        velocidadNominal: '$material.velocidadNominal',
-        orden: '$material.orden',
-        lote: '$material.lote',
-        // Campos de producción
-        piezas: '$piezasProduccidas',
-        fecha: { $dateToString: { format: '%Y-%m-%d', date: '$fechaHora' } },
-        hora: { $dateToString: { format: '%H:%M', date: '$fechaHora' } },
-        ciclo: '$ciclo',
-        // Campos calculados
-        paros: { $size: '$paros' },
-        paroDuracion: { $sum: '$paros.duracion' },
-        rechazos: { $sum: '$rechazos.cantidad' },
-        // Campos relacionados
-        turno: '$turno.nombreTurno',
-        proceso: '$proceso.nombreProceso',
-        centro: '$centro.nombreCentro',
-        // Campos adicionales para debugging
-        materialCompleto: '$material'
-      }
-    });
+    
+// Etapa 5: Proyectar los datos en el formato deseado con todos los campos necesarios
+pipeline.push({
+  $project: {
+    _id: 1,
+    id: '$_id',
+    // Campos de material
+    material: '$material.nombreMaterial',
+    descripcionMaterial: '$material.descripcionMaterial',
+    velocidadNominal: '$material.velocidadNominal',
+    orden: '$material.orden',
+    lote: '$material.lote',
+    // Campos de producción
+    piezas: '$piezasProduccidas',
+    
+    // Usar timezone en lugar de añadir horas manualmente
+    fecha: { 
+      $dateToString: { 
+        format: '%Y-%m-%d', 
+        date: '$fechaHora', 
+        timezone: 'America/Mexico_City'  // Especificar la zona horaria
+      } 
+    },
+    hora: { 
+      $dateToString: { 
+        format: '%H:%M', 
+        date: '$fechaHora',
+        timezone: 'America/Mexico_City'  // Especificar la zona horaria
+      } 
+    },
+    
+    ciclo: '$ciclo',
+    // Campos calculados
+    paros: { $size: '$paros' },
+    paroDuracion: { $sum: '$paros.duracion' },
+    rechazos: { $sum: '$rechazos.cantidad' },
+    // Campos relacionados
+    turno: '$turno.nombreTurno',
+    proceso: '$proceso.nombreProceso',
+    centro: '$centro.nombreCentro',
+    // Campos adicionales para debugging
+    materialCompleto: '$material'
+  }
+});
     
     // Etapa 6: Ordenar los resultados por fecha y hora
     pipeline.push({
