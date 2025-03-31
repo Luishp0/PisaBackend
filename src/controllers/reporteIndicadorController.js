@@ -15,7 +15,6 @@ export const getReporteIndicadores = async (req, res) => {
     // Extraer los parámetros de filtro que aparecen en la interfaz
     const { centro, departamento, linea, proceso, desde, hasta } = req.method === 'GET' ? req.query : req.body;
     
-    console.log('Filtros recibidos:', { centro, departamento, linea, proceso, desde, hasta });
     
     // Crear objeto para almacenar filtros para la consulta inicial
     let produccionQuery = {};
