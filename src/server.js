@@ -29,6 +29,9 @@ import catalogoCentroRoutes from './routes/catalogoCentroRoute.js';
 import catalogoMaterialRoutes from './routes/catalogoMaterialRoute.js'
 import catalogoRechazoRoutes from './routes/catalogoRechazoRoute.js';
 import catalogoParoRoutes from './routes/catalogoParoRoutes.js';
+//filtro
+import reporteIndicadoresRoutes from './routes/reporteIndicadoresRoute.js';
+
 
 const app = express();
 
@@ -43,29 +46,38 @@ app.use('/roles', roleRoutes);
 app.use('/auth', authRoutes);
 
 app.use('/produccion', produccionRoutes);
-
 app.use("/materiales", materialRouter);
-app.use('/centro', centroRoutes);
+app.use('/turno', turnoRouter);
+app.use("/rechazo", rechazoRouter);
+app.use("/paros", paroRouter);
 app.use('/proceso', procesoRoutes);
+
+
 app.use('/etapa', etapaRoutes);
 app.use('/departamento', departamentoRouter);
 app.use('/grupo', grupoRouter);
-app.use('/turno', turnoRouter);
+
 app.use("/linea", lineaRouter);
 
-app.use("/rechazo", rechazoRouter);
-app.use("/paros", paroRouter);
+
+
+app.use('/centro', centroRoutes);
 //catalogo
 app.use('/catalogoTurno', catalogoTurnoRoutes);
-app.use('/catalogoProceso', catalogoProcesoRoutes);
-app.use('/catalogoLinea', catalogoLineaRoutes);
 app.use('/catalogoGrupo', catalogoGrupoRoutes);
 app.use('/catalogoEtapa', catalogoEtapaRoutes);
+
 app.use('/catalogoDepartamento', catalogoDepartamentoRoutes);
+app.use('/catalogoLinea', catalogoLineaRoutes);
+app.use('/catalogoProceso', catalogoProcesoRoutes);
 app.use('/catalogoCentro', catalogoCentroRoutes);
+
 app.use('/catalogoMaterial', catalogoMaterialRoutes);
 app.use('/catalogoRechazo', catalogoRechazoRoutes);
 app.use('/catalogoParo', catalogoParoRoutes);
+
+//filtro
+app.use('/reporteindicador', reporteIndicadoresRoutes)
 
 
 // Iniciar servidor
