@@ -10,9 +10,7 @@ import authRoutes from './routes/authRouter.js'
 import produccionRoutes from './routes/produccionRouter.js'
 import centroRoutes from './routes/centroRouter.js'
 import procesoRoutes from './routes/procesoRouter.js'
-import etapaRoutes from './routes/etapaRouter.js'
 import departamentoRouter from "./routes/departamentoRouter.js";
-import grupoRouter from "./routes/grupoRouter.js";
 import turnoRouter from "./routes/turnoRouter.js";
 import lineaRouter from "./routes/lineaRouter.js";
 import materialRouter from "./routes/materialRouter.js";
@@ -47,19 +45,16 @@ app.use('/auth', authRoutes);
 
 app.use('/produccion', produccionRoutes);
 app.use("/materiales", materialRouter);
+
 app.use('/turno', turnoRouter);
 app.use("/rechazo", rechazoRouter);
 app.use("/paros", paroRouter);
 app.use('/proceso', procesoRoutes);
 
 
-app.use('/etapa', etapaRoutes);
 app.use('/departamento', departamentoRouter);
-app.use('/grupo', grupoRouter);
 
 app.use("/linea", lineaRouter);
-
-
 
 app.use('/centro', centroRoutes);
 //catalogo

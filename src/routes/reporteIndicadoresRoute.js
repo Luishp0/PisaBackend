@@ -1,6 +1,6 @@
 // routes/reporteIndicadoresRoute.js
 import express from 'express';
-import { getReporteIndicadores } from '../controllers/reporteIndicadorController.js';
+import { getReporteIndicadores,filtrarProduccion } from '../controllers/reporteIndicadorController.js';
 
 const router = express.Router();
 
@@ -9,7 +9,12 @@ const router = express.Router();
  * @desc    Obtener reporte de indicadores con filtros aplicados
  * @access  Privado
  */
+
+// Ruta GET para consultar reportes con query params
 router.get('/', getReporteIndicadores);
+
+// Ruta POST para filtrar con body (útil para Postman)
+router.post('/filtrar', filtrarProduccion);
 
 /**
  * @route   GET /api/reporteIndicadores/resumen

@@ -7,34 +7,135 @@ import Rechazo from '../models/rechazoModel.js';
 import Paro from '../models/paroModel.js';
 import Proceso from '../models/procesoModel.js';
 import Centro from '../models/centroModel.js';
+import Departamento from '../models/departamentoModel.js';
+import Linea from '../models/lineaModel.js';
 
-/**
- * Obtener reporte de indicadores con filtros aplicados
- * @param {Object} req - Objeto de solicitud Express
- * @param {Object} res - Objeto de respuesta Express
- */
-// Reemplaza toda tu lógica de agregación con:
 export const getReporteIndicadores = async (req, res) => {
   try {
-    // Obtener producciones
-    const producciones = await Produccion.find().lean();
+    // Extraer los parámetros de filtro que aparecen en la interfaz
+    const { centro, departamento, linea, proceso, desde, hasta } = req.method === 'GET' ? req.query : req.body;
     
-    // Obtener todos los materiales
-    const materiales = await Material.find().lean();
+    console.log('Filtros recibidos:', { centro, departamento, linea, proceso, desde, hasta });
     
-    // Obtener todos los turnos
-    const turnos = await Turno.find().lean();
+    // Crear objeto para almacenar filtros para la consulta inicial
+    let produccionQuery = {};
     
-    // Obtener todos los rechazos
-    const rechazos = await Rechazo.find().lean();
+    // Filtro de fecha
+    if (desde || hasta) {
+      produccionQuery.fechaHora = {};
+      
+      if (desde) {
+        const fechaDesdeObj = new Date(desde);
+        fechaDesdeObj.setHours(0, 0, 0, 0);
+        produccionQuery.fechaHora.$gte = fechaDesdeObj;
+      }
+      
+      if (hasta) {
+        const fechaHastaObj = new Date(hasta);
+        fechaHastaObj.setHours(23, 59, 59, 999);
+        produccionQuery.fechaHora.$lte = fechaHastaObj;
+      }
+    }
+
+    // Consultar producciones con filtro de fecha
+    const producciones = await Produccion.find(produccionQuery).lean();
     
-    // Obtener todos los paros
-    const paros = await Paro.find().lean();
+    if (producciones.length === 0) {
+      return res.status(200).json([]);
+    }
     
-    // Obtener todos los procesos
-    const procesos = await Proceso.find().lean();
+    // Obtener IDs de producción
+    const produccionIds = producciones.map(p => p._id);
     
-    // Crear un mapa de materiales por produccion
+    // Consultar datos relacionados
+    const materiales = await Material.find({ produccion: { $in: produccionIds } }).lean();
+    const turnos = await Turno.find({ produccion: { $in: produccionIds } }).lean();
+    const rechazos = await Rechazo.find({ produccion: { $in: produccionIds } }).lean();
+    const paros = await Paro.find({ produccion: { $in: produccionIds } }).lean();
+    
+    // Filtrar por proceso
+    let procesosFiltrados = [];
+    let produccionesConProceso = [...produccionIds];
+    
+    if (proceso) {
+      const procesos = await Proceso.find({
+        nombreProceso: { $regex: proceso, $options: 'i' },
+        produccion: { $in: produccionIds }
+      }).lean();
+      
+      if (procesos.length === 0) {
+        return res.status(200).json([]);
+      }
+      
+      procesosFiltrados = procesos;
+      produccionesConProceso = procesos.map(p => p.produccion.toString());
+    } else {
+      procesosFiltrados = await Proceso.find({ produccion: { $in: produccionIds } }).lean();
+    }
+    
+    // Filtrar por centro
+    let produccionesConCentro = [...produccionIds.map(id => id.toString())];
+    
+    if (centro) {
+      const centros = await Centro.find({
+        nombreCentro: { $regex: centro, $options: 'i' },
+        produccion: { $in: produccionIds }
+      }).lean();
+      
+      if (centros.length === 0) {
+        return res.status(200).json([]);
+      }
+      
+      produccionesConCentro = centros.map(c => c.produccion.toString());
+    }
+    
+    // Filtrar por departamento
+    let produccionesConDepartamento = [...produccionIds.map(id => id.toString())];
+    
+    if (departamento) {
+      const departamentos = await Departamento.find({
+        nombreDepartamento: { $regex: departamento, $options: 'i' },
+        produccion: { $in: produccionIds }
+      }).lean();
+      
+      if (departamentos.length === 0) {
+        return res.status(200).json([]);
+      }
+      
+      produccionesConDepartamento = departamentos.map(d => d.produccion.toString());
+    }
+    
+    // Filtrar por línea
+    let produccionesConLinea = [...produccionIds.map(id => id.toString())];
+    
+    if (linea) {
+      const lineas = await Linea.find({
+        nombreLinea: { $regex: linea, $options: 'i' },
+        produccion: { $in: produccionIds }
+      }).lean();
+      
+      if (lineas.length === 0) {
+        return res.status(200).json([]);
+      }
+      
+      produccionesConLinea = lineas.map(l => l.produccion.toString());
+    }
+    
+    // Intersección de todos los filtros
+    const produccionesFiltradas = produccionIds
+      .map(id => id.toString())
+      .filter(id => 
+        produccionesConProceso.includes(id) && 
+        produccionesConCentro.includes(id) && 
+        produccionesConDepartamento.includes(id) && 
+        produccionesConLinea.includes(id)
+      );
+    
+    if (produccionesFiltradas.length === 0) {
+      return res.status(200).json([]);
+    }
+    
+    // Convertir a MapObject para acceso más eficiente
     const materialesPorProduccion = {};
     materiales.forEach(material => {
       if (material.produccion) {
@@ -43,7 +144,6 @@ export const getReporteIndicadores = async (req, res) => {
       }
     });
     
-    // Crear mapa de turnos por producción
     const turnosPorProduccion = {};
     turnos.forEach(turno => {
       if (turno.produccion) {
@@ -52,16 +152,15 @@ export const getReporteIndicadores = async (req, res) => {
       }
     });
     
-    // Crear mapa de procesos por producción
     const procesosPorProduccion = {};
-    procesos.forEach(proceso => {
-      if (proceso.produccion) {
-        const produccionId = proceso.produccion.toString();
-        procesosPorProduccion[produccionId] = proceso;
+    procesosFiltrados.forEach(proc => {
+      if (proc.produccion) {
+        const produccionId = proc.produccion.toString();
+        procesosPorProduccion[produccionId] = proc;
       }
     });
     
-    // Agrupar rechazos por producción y calcular totales
+    // Calcular totales de rechazos por producción
     const rechazosTotalesPorProduccion = {};
     rechazos.forEach(rechazo => {
       if (rechazo.produccion) {
@@ -73,81 +172,85 @@ export const getReporteIndicadores = async (req, res) => {
       }
     });
     
-    // Agrupar paros por producción y calcular tiempo total
+    // Calcular tiempo total de paros por producción
     const tiempoParoTotalPorProduccion = {};
+    const cantidadParosPorProduccion = {};
     paros.forEach(paro => {
       if (paro.produccion) {
         const produccionId = paro.produccion.toString();
+        
         if (!tiempoParoTotalPorProduccion[produccionId]) {
           tiempoParoTotalPorProduccion[produccionId] = 0;
+          cantidadParosPorProduccion[produccionId] = 0;
         }
+        
         tiempoParoTotalPorProduccion[produccionId] += paro.duracion;
+        cantidadParosPorProduccion[produccionId] += 1;
       }
     });
     
-    // Enriquecer las producciones con sus materiales, turnos, rechazos y paros
-    const resultados = producciones.map(produccion => {
-      const produccionId = produccion._id.toString();
-      const material = materialesPorProduccion[produccionId] || {};
-      const turno = turnosPorProduccion[produccionId] || {};
-      const proceso = procesosPorProduccion[produccionId] || {};
-      
-      return {
-        _id: produccion._id,
-        id: produccion._id,
+    // Crear resultados finales
+    const resultados = producciones
+      .filter(p => produccionesFiltradas.includes(p._id.toString()))
+      .map(produccion => {
+        const produccionId = produccion._id.toString();
+        const material = materialesPorProduccion[produccionId] || {};
+        const turno = turnosPorProduccion[produccionId] || {};
+        const proceso = procesosPorProduccion[produccionId] || {};
         
-        // Campos de material
-        material: material.nombreMaterial || null,
-        velocidadNominal: material.velocidadNominal || null,
-        orden: material.orden || null,
-        lote: material.lote || null,
+        // Formatear fecha y hora
+        const fechaHora = new Date(produccion.fechaHora);
         
-        // Campo de proceso (ahora desde la tabla Proceso)
-        proceso: proceso.nombreProceso || 'No especificado',
-        
-        // Campo de turno
-        turno: turno.nombreTurno || 'No especificado',
-        
-        // Campo de rechazos (solo el total)
-        rechazos: rechazosTotalesPorProduccion[produccionId] || 0,
-        
-        // Campo de tiempo de paro (solo el total)
-        tiempoParo: tiempoParoTotalPorProduccion[produccionId] || 0,
-        
-        // Campos de producción
-        piezas: produccion.piezasProduccidas,
-        
-        // Formatear fecha y hora para zona horaria local
-        fecha: new Date(produccion.fechaHora).toLocaleDateString('es-MX', {
-          timeZone: 'America/Mexico_City',
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        }),
-        hora: new Date(produccion.fechaHora).toLocaleTimeString('es-MX', {
-          timeZone: 'America/Mexico_City',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
-        }),
-        ciclo: produccion.ciclo,
-      };
-    });
+        return {
+          _id: produccionId,
+          id: produccionId,
+          
+          // Campos de material
+          material: material.nombreMaterial || null,
+          velocidadNominal: material.velocidadNominal || null,
+          orden: material.orden || null,
+          lote: material.lote || null,
+          
+          // Campo de proceso
+          proceso: proceso.nombreProceso || 'No especificado',
+          
+          // Campo de turno
+          turno: turno.nombreTurno || 'No especificado',
+          
+          // Campo de rechazos (total)
+          rechazos: rechazosTotalesPorProduccion[produccionId] || 0,
+          
+          // Campo de tiempo de paro (total)
+          tiempoParo: tiempoParoTotalPorProduccion[produccionId] || 0,
+          
+          // Campos de producción
+          piezas: produccion.piezasProduccidas || 0,
+          nominales: material.velocidadNominal || 0,
+          
+          // Fecha y hora formateadas
+          fecha: fechaHora.toLocaleDateString('es-MX', {
+            timeZone: 'America/Mexico_City',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          }),
+          
+          hora: fechaHora.toLocaleTimeString('es-MX', {
+            timeZone: 'America/Mexico_City',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+          }),
+          
+          ciclo: produccion.ciclo || 0,
+          paros: cantidadParosPorProduccion[produccionId] || 0
+        };
+      });
     
-    // Filtrar solo los resultados que tienen material
+    // Filtrar para incluir solo aquellos con material definido
     const resultadosConMaterial = resultados.filter(r => r.material !== null);
     
-    if (resultadosConMaterial.length === 0) {
-      return res.status(200).json({
-        message: 'No se encontraron resultados con materiales asociados',
-        debug: {
-          totalProducciones: producciones.length,
-          totalMateriales: materiales.length
-        }
-      });
-    }
-    
-    // Ordenar por fecha y hora
+    // Ordenar por fecha y hora (más recientes primero)
     resultadosConMaterial.sort((a, b) => {
       if (a.fecha !== b.fecha) return b.fecha.localeCompare(a.fecha);
       return b.hora.localeCompare(a.hora);
@@ -155,128 +258,23 @@ export const getReporteIndicadores = async (req, res) => {
     
     res.status(200).json(resultadosConMaterial);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error en getReporteIndicadores:', error);
     res.status(500).json({
       error: 'Error al procesar la solicitud',
       message: error.message
     });
   }
 };
-/**
- * Obtener reporte de indicador específico por ID
- * @param {Object} req - Objeto de solicitud Express
- * @param {Object} res - Objeto de respuesta Express
- */
-export const getReporteIndicadorById = async (req, res) => {
+
+// Endpoint para filtrar producción (útil para Postman)
+export const filtrarProduccion = async (req, res) => {
   try {
-    const { id } = req.params;
-    
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'ID de reporte inválido' });
-    }
-    
-    const pipeline = [
-      // Filtrar por ID
-      { $match: { _id: new mongoose.Types.ObjectId(id) } },
-      
-      // Unir con materiales
-      {
-        $lookup: {
-          from: 'materiales',
-          localField: '_id',
-          foreignField: 'produccion',
-          as: 'material'
-        }
-      },
-      { $unwind: { path: '$material', preserveNullAndEmptyArrays: true } },
-      
-      // Unir con turnos
-      {
-        $lookup: {
-          from: 'turnos',
-          localField: '_id',
-          foreignField: 'produccion',
-          as: 'turno'
-        }
-      },
-      { $unwind: { path: '$turno', preserveNullAndEmptyArrays: true } },
-      
-      // Unir con procesos
-      {
-        $lookup: {
-          from: 'procesos',
-          localField: '_id',
-          foreignField: 'produccion',
-          as: 'proceso'
-        }
-      },
-      { $unwind: { path: '$proceso', preserveNullAndEmptyArrays: true } },
-      
-      // Unir con centros
-      {
-        $lookup: {
-          from: 'centros',
-          localField: '_id',
-          foreignField: 'produccion',
-          as: 'centro'
-        }
-      },
-      { $unwind: { path: '$centro', preserveNullAndEmptyArrays: true } },
-      
-      // Unir con rechazos y paros
-      {
-        $lookup: {
-          from: 'rechazos',
-          localField: '_id',
-          foreignField: 'produccion',
-          as: 'rechazos'
-        }
-      },
-      {
-        $lookup: {
-          from: 'paros',
-          localField: '_id',
-          foreignField: 'produccion',
-          as: 'paros'
-        }
-      },
-      
-      // Proyectar datos formateados
-      {
-        $project: {
-          _id: 1,
-          id: '$_id',
-          material: '$material.nombreMaterial',
-          descripcionMaterial: '$material.descripcionMaterial',
-          velocidadNominal: '$material.velocidadNominal',
-          orden: '$material.orden',
-          lote: '$material.lote',
-          piezas: '$piezasProduccidas',
-          fecha: { $dateToString: { format: '%Y-%m-%d', date: '$fechaHora' } },
-          hora: { $dateToString: { format: '%H:%M', date: '$fechaHora' } },
-          ciclo: '$ciclo',
-          paros: { $size: '$paros' },
-          paroDuracion: { $sum: '$paros.duracion' },
-          rechazos: { $sum: '$rechazos.cantidad' },
-          turno: '$turno.nombreTurno',
-          proceso: '$proceso.nombreProceso',
-          centro: '$centro.nombreCentro'
-        }
-      }
-    ];
-    
-    const resultado = await Produccion.aggregate(pipeline);
-    
-    if (!resultado || resultado.length === 0) {
-      return res.status(404).json({ error: 'Reporte de indicador no encontrado' });
-    }
-    
-    res.status(200).json(resultado[0]);
+    return getReporteIndicadores(req, res);
   } catch (error) {
-    console.error('Error al obtener reporte por ID:', error);
-    res.status(500).json({ 
-      error: 'Error al procesar la solicitud', 
-      message: error.message 
+    console.error('Error en filtrarProduccion:', error);
+    res.status(500).json({
+      error: 'Error al filtrar producción',
+      message: error.message
     });
   }
 };
