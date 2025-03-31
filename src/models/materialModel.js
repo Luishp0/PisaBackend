@@ -10,5 +10,5 @@ const MaterialSchema = new mongoose.Schema({
     velocidadNominal: {type: Number, required: true }
 });
 
-const Material = mongoose.model('Material', MaterialSchema, 'materiales');
+const Material = mongoose.model('Material', MaterialSchema, 'material');
 export default Material;
